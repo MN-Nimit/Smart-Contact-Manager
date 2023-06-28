@@ -1,14 +1,20 @@
 package com.smart.contact.manager.controller;
 
 import com.smart.contact.manager.entity.User;
+import com.smart.contact.manager.helper.Message;
 import com.smart.contact.manager.services.UserService;
+//import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 @Controller
 public class HomeController {
@@ -36,21 +42,38 @@ public class HomeController {
     }
 
     @PostMapping("/do_register")
-    public String register(@ModelAttribute("user") User user, @RequestParam(value = "agreement", defaultValue = "false") boolean agreement, Model model){
+    public String register(@Valid @ModelAttribute("user") User user,  BindingResult result, @RequestParam(value = "agreement", defaultValue = "false") boolean agreement,
+                           Model model, HttpSession session){
 
-        if(!agreement){
-            System.out.println("Please agree terms and conditions");
+        try {
+            if (!agreement) {
+                System.out.println("Please agree terms and conditions");
+                throw new Exception("Please agree terms and conditions");
+            }
+
+            if(result.hasErrors()){
+                model.addAttribute("user",user);
+                return "signup";
+            }
+
+            user.setRole("ROLE_USER");
+            user.setEnabled(true);
+            user.setImageUrl("default.png");
+
+            System.out.println("Agreement : " + agreement);
+            System.out.println("User:" + user);
+
+            User result1 = userService.saveUser(user);
+
+            model.addAttribute("user", new User());
+            session.setAttribute("message", new Message("Successfully Registered!", "alert-success"));
+            return "signup";
+
+        } catch (Exception e){
+            e.printStackTrace();
+            model.addAttribute("user", user);
+            session.setAttribute("message", new Message("Something went wrong! " + e.getMessage(), "alert-danger"));
+            return "signup";
         }
-        user.setRole("ROLE_USER");
-        user.setEnabled(true);
-
-        System.out.println("Agreement : " + agreement);
-        System.out.println("User:" + user);
-
-        User result = userService.saveUser(user);
-
-        model.addAttribute("user", result);
-
-        return "signup";
     }
 }

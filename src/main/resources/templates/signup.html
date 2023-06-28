@@ -14,10 +14,16 @@
             <div class="col-md-8 offset-md-2">
                 <div class="my-card mt-4">
                     <h1 class="text-center">Register Here!</h1>
+                    <div th:if="${session.message}" th:classappend="${session.message.type}" class="alert" role="alert">
+                        <p th:text="${session.message.content}"></p>
+                        <th:block th:text="${#session.removeAttribute('message')}"></th:block>
+                    </div>
                     <form action="" th:action="@{/do_register}" method="post" th:object="${user}" autocomplete="off">
                         <div class="form-group">
                             <label for="fieldName">Name</label>
-                            <input type="text" class="form-control" id="fieldName" name="name" placeholder="Enter Name" required th:value="${user.name}">
+                            <input type="text" class="form-control" th:classappend="${#fields.hasErrors('name') ? 'is-invalid':''}" id="fieldName" name="name" placeholder="Enter Name" required th:value="${user.name}">
+                            <div class="invalid-feedback" th:each="e : ${#fields.errors('name')}" th:text="${e}">
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="fieldEmail">Email</label>
@@ -28,7 +34,7 @@
                             <input type="password" class="form-control" id="fieldPassword" name="password" placeholder="Enter Password" required>
                         </div>
                         <div class="form-group">
-                            <textarea class="form-control" id="fieldAbout" name="about" rows="10" placeholder="About Yourself" th:value="${user.about}"></textarea>
+                            <textarea class="form-control" id="fieldAbout" name="about" rows="10" placeholder="About Yourself" th:text="${user.about}"></textarea>
                         </div>
                         <div class="form-group form-check">
                             <input type="checkbox" class="form-check-input" id="agreement" name="agreement">
