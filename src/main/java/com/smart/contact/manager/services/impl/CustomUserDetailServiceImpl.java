@@ -1,5 +1,6 @@
-package com.smart.contact.manager.config;
+package com.smart.contact.manager.services.impl;
 
+import com.smart.contact.manager.entity.CustomUserDetails;
 import com.smart.contact.manager.entity.User;
 import com.smart.contact.manager.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-public class UserDetailServiceImpl implements UserDetailsService {
+public class CustomUserDetailServiceImpl implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;

@@ -1,4 +1,4 @@
-package com.smart.contact.manager.config;
+package com.smart.contact.manager.entity;
 
 import com.smart.contact.manager.entity.User;
 import org.springframework.security.core.GrantedAuthority;

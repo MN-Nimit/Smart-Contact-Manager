@@ -13,7 +13,7 @@
         <div class="row">
             <div class="col-md-8 offset-md-2">
                 <div class="my-card mt-4">
-                    <h1 class="text-center">Register Here!</h1>
+                    <h2 class="text-center text-info">Register Here!</h2>
                     <div th:if="${session.message}" th:classappend="${session.message.type}" class="alert" role="alert">
                         <p th:text="${session.message.content}"></p>
                         <th:block th:text="${#session.removeAttribute('message')}"></th:block>
