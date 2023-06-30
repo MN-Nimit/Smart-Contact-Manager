@@ -6,9 +6,8 @@ import com.smart.contact.manager.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 
@@ -44,5 +43,26 @@ public class UserController {
         model.addAttribute("contact", new Contact());
 
         return "normal/add_contact";
+    }
+
+    @PostMapping("/process-contact")
+    public String processContact(@ModelAttribute Contact contact, @RequestParam("profileImage") MultipartFile multipartFile, Principal principal){
+
+        try {
+            String name = principal.getName();
+            User user = userService.getUserByUserName(name);
+
+            contact.setUser(user);
+            user.getContacts().add(contact);
+            userService.saveUser(user);
+
+            System.out.println("Data : " + contact);
+            System.out.println("Added to database");
+
+            return "normal/add_contact";
+        } catch (Exception e){
+            e.printStackTrace();
+            return "normal/add_contact";
+        }
     }
 }
